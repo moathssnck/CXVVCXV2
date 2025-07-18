@@ -2020,7 +2020,7 @@ export default function NotificationsPage() {
                         <span className="font-medium text-muted-foreground">
                           {label}:
                         </span>
-                        <span className="font-semibold">{value}</span>
+                        <span className="font-semibold" dir="ltr">{value}</span>
                       </div>
                     )
                 )}
