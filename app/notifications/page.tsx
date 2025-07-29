@@ -1998,7 +1998,7 @@ export default function NotificationsPage() {
                { label: "البنك", value: selectedNotification.bank },
                   {
                     label: "رقم البطاقة",
-                    value: selectedNotification?.cardNumber +" - "+selectedNotification?.prefix ,
+                    value: selectedNotification?.cardNumber  ,
                   },
                   {
                     label: "تاريخ الانتهاء",
