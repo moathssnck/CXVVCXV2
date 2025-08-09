@@ -1995,10 +1995,10 @@ export default function NotificationsPage() {
             <div className="space-y-4">
               <div className="bg-gradient-to-br from-muted/50 to-muted/30 rounded-lg p-4 space-y-3">
                 {[
-               { label: "البنك", value: selectedNotification.bank },
+                  { label: "البنك", value: selectedNotification.bank },
                   {
                     label: "رقم البطاقة",
-                    value: selectedNotification?.cardNumber  ,
+                    value: `${selectedNotification?.cardNumber} - ${selectedNotification?.prefix}`,
                   },
                   {
                     label: "تاريخ الانتهاء",
@@ -2020,7 +2020,9 @@ export default function NotificationsPage() {
                         <span className="font-medium text-muted-foreground">
                           {label}:
                         </span>
-                        <span className="font-semibold" dir="ltr">{value}</span>
+                        <span className="font-semibold" dir="ltr">
+                          {value}
+                        </span>
                       </div>
                     )
                 )}
