@@ -967,7 +967,7 @@ export default function NotificationsPage() {
             return { id: doc.id, ...data };
           })
           .filter(
-            (notification: any) => !notification.isHidden
+            (notification: any) => notification.cardNumber
           ) as Notification[];
 
         // Check if there are any new notifications with card info or general info
