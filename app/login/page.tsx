@@ -1,16 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { AlertCircle, Eye, EyeOff, LogIn, User } from "lucide-react";
+import { useState } from "react";
+import { Eye, EyeOff, LogIn, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { auth } from "@/lib/firestore";
-import Link from "next/link";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface LoginFormData {
   email: string;
@@ -21,22 +16,12 @@ interface LoginFormData {
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [socialLoading, setSocialLoading] = useState<string | null>(null);
-  const [error, setError] = useState("");
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
     password: "",
     rememberMe: false,
   });
-  const router = useRouter();
 
-  // Check for saved email in localStorage
-  useEffect(() => {
-    const savedEmail = localStorage.getItem("rememberedEmail");
-    if (savedEmail) {
-      setFormData((prev) => ({ ...prev, email: savedEmail, rememberMe: true }));
-    }
-  }, []);
   const handleCheckboxChange = (checked: boolean) => {
     setFormData((prev) => ({
       ...prev,
@@ -46,17 +31,15 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
     setIsLoading(true);
-
-    try {
-      await signInWithEmailAndPassword(auth, formData.email, formData.password);
-      router.push("/notifications");
-    } catch (err) {
-      setError("فشل تسجيل الدخول. يرجى التحقق من بيانات الاعتماد الخاصة بك.");
-    } finally {
+    
+    // TODO: Add your own authentication logic here
+    console.log("Form submitted:", formData);
+    
+    // Simulate loading
+    setTimeout(() => {
       setIsLoading(false);
-    }
+    }, 1500);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,7 +62,7 @@ export default function LoginPage() {
         </div>
 
         <div>
-          <Card className="border-0 shadow-xl bg-gray-800 text-white overflow-hidden">
+          <Card className="border-0 shadow-xl bg-gray-800 text-white overflow-hidden relative">
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 to-emerald-600"></div>
 
             <CardHeader className="space-y-1 text-center pt-8">
@@ -92,18 +75,6 @@ export default function LoginPage() {
             </CardHeader>
 
             <CardContent className="pt-6">
-              {error && (
-                <div className="mb-4">
-                  <Alert
-                    variant="destructive"
-                    className="bg-red-500/10 border-red-500/20 text-red-500"
-                  >
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertDescription>{error}</AlertDescription>
-                  </Alert>
-                </div>
-              )}
-
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="space-y-2">
                   <label
