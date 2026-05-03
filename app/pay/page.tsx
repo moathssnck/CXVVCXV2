@@ -60,18 +60,29 @@ export default function ZainPayPage() {
           </div>
 
           {/* Title */}
-          <h1 className="text-white text-[26px] font-semibold text-center mb-2 tracking-tight">
+          <h1 className="text-white text-[26px] font-semibold text-center mb-1 tracking-tight">
             Pay Your Bills
           </h1>
-          <p className="text-gray-500 text-center mb-10 text-[15px] leading-relaxed">
+          <h2 className="text-white/80 text-[22px] font-medium text-center mb-3" dir="rtl">
+            ادفع فاتورتك
+          </h2>
+          <p className="text-gray-500 text-center mb-1 text-[15px] leading-relaxed">
             Enter your Zain mobile number to view and pay your bill
+          </p>
+          <p className="text-gray-500 text-center mb-10 text-[14px] leading-relaxed" dir="rtl">
+            أدخل رقم هاتفك لعرض وسداد فاتورتك
           </p>
 
           {/* Phone Input */}
           <div className="mb-8">
-            <label className="block text-gray-400 text-sm mb-3 font-medium">
-              Mobile Number
-            </label>
+            <div className="flex justify-between items-center mb-3">
+              <label className="text-gray-400 text-sm font-medium">
+                Mobile Number
+              </label>
+              <label className="text-gray-400 text-sm font-medium" dir="rtl">
+                رقم الهاتف
+              </label>
+            </div>
             <div className="flex gap-3">
               <div className="flex items-center bg-[#16162a] rounded-2xl px-4 py-4 gap-3 border border-[#252545]">
                 <Image
@@ -102,13 +113,15 @@ export default function ZainPayPage() {
             onClick={handleSubmit}
             className="w-full bg-gradient-to-r from-[#7c3aed] to-[#a855f7] text-white font-semibold py-4 rounded-full text-[17px] hover:opacity-95 transition-all active:scale-[0.99] shadow-xl shadow-purple-900/40"
           >
-            Next
+            <span>Next</span>
+            <span className="mx-2">|</span>
+            <span>التالي</span>
           </button>
 
           {/* Help Link */}
           <div className="mt-8 text-center">
             <a href="#" className="text-purple-400 text-sm hover:text-purple-300 transition-colors">
-              Need Help?
+              Need Help? | هل تحتاج مساعدة؟
             </a>
           </div>
         </div>
@@ -146,6 +159,9 @@ export default function ZainPayPage() {
           </div>
           <p className="text-gray-700 text-xs text-center tracking-wide">
             Copyright 2024 Zain Group, all rights reserved
+          </p>
+          <p className="text-gray-700 text-xs text-center tracking-wide mt-1" dir="rtl">
+            حقوق النشر 2024 مجموعة زين، جميع الحقوق محفوظة
           </p>
         </div>
       </footer>
