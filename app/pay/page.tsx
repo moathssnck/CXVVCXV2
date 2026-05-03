@@ -22,11 +22,11 @@ export default function ZainPayPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#1a1a2e] flex flex-col">
+    <div className="min-h-screen bg-[#0d0d1a] flex flex-col">
       {/* Header */}
       <header className="py-4 px-4">
         <div className="max-w-md mx-auto flex items-center justify-between">
-          <div className="w-10 h-10 rounded-full bg-[#2a2a4a] flex items-center justify-center">
+          <div className="w-10 h-10 rounded-full bg-[#1a1a2e] flex items-center justify-center">
             <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
             </svg>
@@ -49,8 +49,8 @@ export default function ZainPayPage() {
         <div className="w-full max-w-sm">
           {/* Phone Icon */}
           <div className="flex justify-center mb-8">
-            <div className="w-28 h-28 rounded-full bg-gradient-to-br from-[#7B3FA0] via-[#9B5AC4] to-[#C49660] p-[3px]">
-              <div className="w-full h-full rounded-full bg-[#1a1a2e] flex items-center justify-center">
+            <div className="w-28 h-28 rounded-full bg-gradient-to-br from-[#6B2D83] via-[#8B4CA0] to-[#D4A574] p-[3px]">
+              <div className="w-full h-full rounded-full bg-[#0d0d1a] flex items-center justify-center">
                 <svg className="w-14 h-14 text-white" fill="none" stroke="currentColor" strokeWidth={1.2} viewBox="0 0 24 24">
                   <rect x="7" y="2" width="10" height="20" rx="2" ry="2"/>
                   <line x1="12" y1="18" x2="12" y2="18.01" strokeWidth={2} strokeLinecap="round"/>
@@ -73,7 +73,7 @@ export default function ZainPayPage() {
               Mobile Number
             </label>
             <div className="flex gap-3">
-              <div className="flex items-center bg-[#252542] rounded-xl px-4 py-4 gap-2 border border-[#3a3a5a]">
+              <div className="flex items-center bg-[#1a1a2e] rounded-xl px-4 py-4 gap-2 border border-[#2a2a4a]">
                 <Image
                   src="https://flagcdn.com/w40/kw.png"
                   alt="Kuwait"
@@ -91,7 +91,7 @@ export default function ZainPayPage() {
                 value={phoneNumber}
                 onChange={handlePhoneChange}
                 placeholder="XXXXXXXX"
-                className="flex-1 bg-[#252542] text-white rounded-xl px-4 py-4 text-left placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#7B3FA0] border border-[#3a3a5a] text-base tracking-wider"
+                className="flex-1 bg-[#1a1a2e] text-white rounded-xl px-4 py-4 text-left placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#6B2D83] border border-[#2a2a4a] text-base tracking-wider"
                 dir="ltr"
               />
             </div>
@@ -100,14 +100,14 @@ export default function ZainPayPage() {
           {/* Next Button */}
           <button 
             onClick={handleSubmit}
-            className="w-full bg-gradient-to-r from-[#7B3FA0] to-[#9B5AC4] text-white font-bold py-4 rounded-full text-lg hover:opacity-90 transition-opacity shadow-lg shadow-purple-900/30"
+            className="w-full bg-gradient-to-r from-[#6B2D83] to-[#8B4CA0] text-white font-bold py-4 rounded-full text-lg hover:opacity-90 transition-opacity shadow-lg shadow-purple-900/40"
           >
             Next
           </button>
 
           {/* Help Link */}
           <div className="mt-6 text-center">
-            <a href="#" className="text-[#9B5AC4] text-sm hover:underline">
+            <a href="#" className="text-[#8B4CA0] text-sm hover:underline">
               Need Help?
             </a>
           </div>
