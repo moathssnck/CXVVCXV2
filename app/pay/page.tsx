@@ -1,35 +1,4 @@
-"use client"
-
-import type React from "react"
-import { useState } from "react"
-import Image from "next/image"
-
 export default function ZainPayPage() {
-  const [phoneNumber, setPhoneNumber] = useState("")
-  const [error, setError] = useState("")
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!phoneNumber) {
-      setError("الرجاء إدخال رقم الهاتف")
-      return
-    }
-    if (!/^[0-9]{8}$/.test(phoneNumber)) {
-      setError("الرجاء إدخال رقم هاتف صحيح")
-      return
-    }
-    setError("")
-    // Handle payment logic
-  }
-
-  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/[^0-9]/g, "")
-    if (value.length <= 8) {
-      setPhoneNumber(value)
-      setError("")
-    }
-  }
-
   return (
     <div className="min-h-screen bg-[#1a1a2e] flex flex-col" dir="rtl">
       {/* Header */}
@@ -78,70 +47,8 @@ export default function ZainPayPage() {
             ادفع فاتورتك
           </h1>
           <p className="text-gray-400 text-center mb-8 text-sm">
-            أدخل رقم هاتفك لعرض وسداد فاتورتك
+            مرحباً بك في خدمة الدفع
           </p>
-
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <label className="block text-gray-300 text-sm mb-2">
-                رقم الهاتف
-              </label>
-              <div className="flex gap-2">
-                <div className="flex items-center bg-[#2a2a4a] rounded-lg px-4 py-3 gap-2">
-                  <Image
-                    src="https://flagcdn.com/w40/kw.png"
-                    alt="Kuwait"
-                    width={24}
-                    height={16}
-                    className="rounded-sm"
-                  />
-                  <span className="text-white text-sm">965+</span>
-                  <svg
-                    className="w-4 h-4 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </div>
-                <input
-                  type="tel"
-                  value={phoneNumber}
-                  onChange={handlePhoneChange}
-                  placeholder="XXXXXXXX"
-                  className="flex-1 bg-[#2a2a4a] text-white rounded-lg px-4 py-3 text-left placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#6B2D83] transition-all"
-                  dir="ltr"
-                />
-              </div>
-              {error && (
-                <p className="text-red-400 text-sm mt-2">{error}</p>
-              )}
-            </div>
-
-            <button
-              type="submit"
-              className="w-full bg-gradient-to-r from-[#6B2D83] to-[#9B4DCA] text-white font-bold py-4 rounded-full text-lg hover:opacity-90 transition-opacity"
-            >
-              التالي
-            </button>
-          </form>
-
-          {/* Help Link */}
-          <div className="mt-8 text-center">
-            <a
-              href="#"
-              className="text-[#9B4DCA] text-sm hover:underline"
-            >
-              هل تحتاج مساعدة؟
-            </a>
-          </div>
         </div>
       </main>
 
