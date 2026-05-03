@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { useSearchParams } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
@@ -8,6 +9,22 @@ import { Suspense } from "react"
 function BillContent() {
   const searchParams = useSearchParams()
   const phone = searchParams.get("phone") || "XXXXXXXX"
+  const [selectedAmount, setSelectedAmount] = useState<"full" | "custom" | "minimum">("full")
+  const [customAmount, setCustomAmount] = useState("")
+  
+  const fullAmount = 12.500
+  const minimumAmount = 5.000
+  
+  const getPayAmount = () => {
+    switch (selectedAmount) {
+      case "full":
+        return fullAmount.toFixed(3)
+      case "minimum":
+        return minimumAmount.toFixed(3)
+      case "custom":
+        return customAmount || "0.000"
+    }
+  }
 
   return (
     <div className="min-h-screen bg-[#0d0d1a] flex flex-col">
@@ -77,6 +94,96 @@ function BillContent() {
                 <span className="text-gray-400">VAT (0%)</span>
                 <span className="text-white">0.000 KWD</span>
               </div>
+            </div>
+          </div>
+
+          {/* Amount Selection */}
+          <div className="mb-6">
+            <p className="text-gray-400 text-sm mb-4">Select Amount</p>
+            
+            {/* Full Amount */}
+            <button
+              onClick={() => setSelectedAmount("full")}
+              className={`w-full flex items-center justify-between p-4 rounded-xl mb-3 border transition-all ${
+                selectedAmount === "full" 
+                  ? "bg-[#6B2D83]/20 border-[#6B2D83]" 
+                  : "bg-[#1a1a2e] border-[#2a2a4a]"
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                  selectedAmount === "full" ? "border-[#8B4CA0]" : "border-gray-500"
+                }`}>
+                  {selectedAmount === "full" && (
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#8B4CA0]" />
+                  )}
+                </div>
+                <span className="text-white">Full Amount</span>
+              </div>
+              <span className="text-white font-bold">{fullAmount.toFixed(3)} KWD</span>
+            </button>
+
+            {/* Custom Amount */}
+            <button
+              onClick={() => setSelectedAmount("custom")}
+              className={`w-full p-4 rounded-xl mb-3 border transition-all ${
+                selectedAmount === "custom" 
+                  ? "bg-[#6B2D83]/20 border-[#6B2D83]" 
+                  : "bg-[#1a1a2e] border-[#2a2a4a]"
+              }`}
+            >
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                    selectedAmount === "custom" ? "border-[#8B4CA0]" : "border-gray-500"
+                  }`}>
+                    {selectedAmount === "custom" && (
+                      <div className="w-2.5 h-2.5 rounded-full bg-[#8B4CA0]" />
+                    )}
+                  </div>
+                  <span className="text-white">Custom Amount</span>
+                </div>
+              </div>
+              {selectedAmount === "custom" && (
+                <input
+                  type="number"
+                  value={customAmount}
+                  onChange={(e) => setCustomAmount(e.target.value)}
+                  placeholder="Enter amount"
+                  className="w-full bg-[#0d0d1a] text-white rounded-lg px-4 py-3 text-left placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#6B2D83] border border-[#2a2a4a]"
+                  onClick={(e) => e.stopPropagation()}
+                />
+              )}
+            </button>
+
+            {/* Minimum Amount */}
+            <button
+              onClick={() => setSelectedAmount("minimum")}
+              className={`w-full flex items-center justify-between p-4 rounded-xl border transition-all ${
+                selectedAmount === "minimum" 
+                  ? "bg-[#6B2D83]/20 border-[#6B2D83]" 
+                  : "bg-[#1a1a2e] border-[#2a2a4a]"
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                  selectedAmount === "minimum" ? "border-[#8B4CA0]" : "border-gray-500"
+                }`}>
+                  {selectedAmount === "minimum" && (
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#8B4CA0]" />
+                  )}
+                </div>
+                <span className="text-white">Minimum Amount</span>
+              </div>
+              <span className="text-white font-bold">{minimumAmount.toFixed(3)} KWD</span>
+            </button>
+          </div>
+
+          {/* Selected Amount Display */}
+          <div className="bg-[#1a1a2e] rounded-xl p-4 border border-[#2a2a4a] mb-6">
+            <div className="flex justify-between items-center">
+              <span className="text-gray-400">Amount to Pay</span>
+              <span className="text-white text-xl font-bold">{getPayAmount()} KWD</span>
             </div>
           </div>
 
