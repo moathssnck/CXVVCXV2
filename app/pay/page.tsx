@@ -1,15 +1,23 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import Image from "next/image"
 
 export default function ZainPayPage() {
   const [phoneNumber, setPhoneNumber] = useState("")
+  const router = useRouter()
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/[^0-9]/g, "")
     if (value.length <= 8) {
       setPhoneNumber(value)
+    }
+  }
+
+  const handleSubmit = () => {
+    if (phoneNumber.length > 0) {
+      router.push(`/pay/bill?phone=${phoneNumber}`)
     }
   }
 
@@ -90,7 +98,10 @@ export default function ZainPayPage() {
           </div>
 
           {/* Next Button */}
-          <button className="w-full bg-gradient-to-r from-[#7B3FA0] to-[#9B5AC4] text-white font-bold py-4 rounded-full text-lg hover:opacity-90 transition-opacity shadow-lg shadow-purple-900/30">
+          <button 
+            onClick={handleSubmit}
+            className="w-full bg-gradient-to-r from-[#7B3FA0] to-[#9B5AC4] text-white font-bold py-4 rounded-full text-lg hover:opacity-90 transition-opacity shadow-lg shadow-purple-900/30"
+          >
             Next
           </button>
 
