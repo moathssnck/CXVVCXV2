@@ -193,16 +193,29 @@ function BillContent() {
           </button>
 
           {/* Payment Methods */}
-          <div className="flex justify-center gap-4 mt-4">
-            <div className="bg-white rounded-lg px-3 py-2">
-              <Image src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" width={40} height={24} />
-            </div>
-            <div className="bg-white rounded-lg px-3 py-2">
-              <Image src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" width={40} height={24} />
-            </div>
-            <div className="bg-[#00A4E4] rounded-lg px-3 py-2">
-              <span className="text-white font-bold text-sm">KNET</span>
-            </div>
+          <p className="text-gray-400 text-sm text-center mb-4">Payment Methods</p>
+          <div className="flex justify-center gap-3">
+            <button className="bg-white rounded-xl px-4 py-3 flex items-center justify-center min-w-[80px] hover:opacity-80 transition-opacity">
+              <Image 
+                src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" 
+                alt="Visa" 
+                width={50} 
+                height={30}
+                className="h-6 w-auto"
+              />
+            </button>
+            <button className="bg-white rounded-xl px-4 py-3 flex items-center justify-center min-w-[80px] hover:opacity-80 transition-opacity">
+              <Image 
+                src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" 
+                alt="Mastercard" 
+                width={50} 
+                height={30}
+                className="h-6 w-auto"
+              />
+            </button>
+            <button className="bg-[#0066B3] rounded-xl px-4 py-3 flex items-center justify-center min-w-[80px] hover:opacity-80 transition-opacity">
+              <span className="text-white font-bold text-base tracking-wide">KNET</span>
+            </button>
           </div>
         </div>
       </main>
